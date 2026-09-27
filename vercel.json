@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://bounty-hunter-api.vercel.app/api/:path*"
+      "destination": "https://bounty-hunter-api-phi.vercel.app/api/:path*"
     }
   ]
 }
