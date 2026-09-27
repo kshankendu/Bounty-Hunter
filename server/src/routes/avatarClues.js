@@ -7,7 +7,7 @@ async function cluesAsMap() {
   const docs = await AvatarClue.find();
   const map = {};
   for (const doc of docs) {
-    map[doc.avatar] = doc.stages.map((s) => ({ clue: s.clue, answer: s.answer }));
+    map[doc.avatar] = doc.stages.map((s) => ({ clue: s.clue, clueHi: s.clueHi, answer: s.answer }));
   }
   return map;
 }
@@ -22,14 +22,14 @@ router.get('/', async (_req, res, next) => {
 
 router.post('/:avatar', async (req, res, next) => {
   try {
-    const { clue, answer } = req.body;
+    const { clue, clueHi, answer } = req.body;
     if (!clue?.trim() || !answer?.trim()) {
       return res.json({ ok: false, message: 'Clue and answer are required.' });
     }
     const avatar = req.params.avatar;
     let doc = await AvatarClue.findOne({ avatar });
     if (!doc) doc = new AvatarClue({ avatar, stages: [] });
-    doc.stages.push({ clue: clue.trim(), answer: answer.trim() });
+    doc.stages.push({ clue: clue.trim(), clueHi: (clueHi || '').trim(), answer: answer.trim() });
     await doc.save();
     res.json({ ok: true, avatarClues: await cluesAsMap() });
   } catch (err) {

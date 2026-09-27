@@ -17,6 +17,7 @@ export function GameProvider({ children }) {
   const [gameState, setGameState] = useState({ ended: false, endedAt: null });
   const [myGroupId, setMyGroupIdState] = useState(() => store.myGroupId());
   const [loaded, setLoaded] = useState(false);
+  const [lang, setLangState] = useState(() => localStorage.getItem('bh_lang') || 'en');
 
   // ---------- navigation ----------
   const [screen, setScreen] = useState(() => (store.myGroupId() ? 'clue' : 'home'));
@@ -144,11 +145,11 @@ export function GameProvider({ children }) {
   const adminLogin = useCallback((password) => store.adminLogin(password), []);
 
   // ---- avatar clue templates ----
-  const addAvatarStage = useCallback(async (avatarName, clue, answer) => {
-    if (!clue.trim() || !answer.trim()) return;
-    const res = await store.addAvatarStage(avatarName, clue, answer);
-    if (res.ok) setAvatarClues(res.avatarClues);
-  }, []);
+  const addAvatarStage = useCallback(async (avatarName, clue, clueHi, answer) => {
+  if (!clue.trim() || !answer.trim()) return;
+  const res = await store.addAvatarStage(avatarName, clue, clueHi, answer);
+  if (res.ok) setAvatarClues(res.avatarClues);
+}, []);
   const deleteAvatarStage = useCallback((avatarName, index) => {
     requestConfirm(
       `Remove Stage ${index + 1} for ${avatarName}? Squads who already solved it keep their score, but if a squad hasn't reached it yet, the stages after it will shift up one.`,
@@ -174,12 +175,12 @@ export function GameProvider({ children }) {
   }, [groups, requestConfirm]);
 
   // ---- bonuses (admin side) ----
-  const pushBonus = useCallback(async (clue, answer, pointsRaw) => {
-    if (!clue.trim() || !answer.trim()) return { ok: false, message: 'Fill in the bonus clue and answer.' };
-    const res = await store.pushBonus(clue, answer, pointsRaw);
-    if (res.ok) setBonuses((bs) => [...bs, res.bonus]);
-    return res;
-  }, []);
+  const pushBonus = useCallback(async (clue, clueHi, answer, pointsRaw) => {
+  if (!clue.trim() || !answer.trim()) return { ok: false, message: 'Fill in the bonus clue and answer.' };
+  const res = await store.pushBonus(clue, clueHi, answer, pointsRaw);
+  if (res.ok) setBonuses((bs) => [...bs, res.bonus]);
+  return res;
+}, []);
   const toggleBonus = useCallback(async (id) => {
     const res = await store.toggleBonus(id);
     if (res.ok) setBonuses((bs) => bs.map((b) => (b.id === res.bonus.id ? res.bonus : b)));
@@ -219,6 +220,11 @@ export function GameProvider({ children }) {
     }
     return res;
   }, []);
+
+  const setLang = useCallback((l) => {
+  localStorage.setItem('bh_lang', l);
+  setLangState(l);
+}, []);
 
   // ---- resume (player side, e.g. new device or cleared storage) ----
   // No real auth here (same trust model as the rest of this demo) — the
@@ -268,7 +274,7 @@ export function GameProvider({ children }) {
     gameEndModal, dismissGameEnd,
     adminLogin,
     addAvatarStage, deleteAvatarStage,
-    passClue, removeGroup,
+    passClue, removeGroup, lang, setLang,
     pushBonus, toggleBonus, deleteBonus,
     endGame, reopenGame,
     registerTeam, resumeGroup,

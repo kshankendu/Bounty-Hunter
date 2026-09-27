@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 const stageSchema = new mongoose.Schema(
   {
     clue: { type: String, required: true },
+    clueHi: { type: String, default: '' },
     answer: { type: String, required: true }
   },
   { _id: false }

@@ -4,7 +4,7 @@ import { useGame } from '../../context/GameContext.jsx';
 import BonusSection from './BonusSection.jsx';
 
 export default function Clue() {
-  const { myGroup, avatarClues, gameState, submitScan, goTo } = useGame();
+  const { myGroup, avatarClues, gameState, submitScan, goTo, lang, setLang } = useGame();
   const [qr, setQr] = useState('');
   const [msg, setMsg] = useState(null);
   const [shake, setShake] = useState(false);
@@ -25,9 +25,10 @@ export default function Clue() {
   const stage = stages[myGroup.stageIndex];
   const ended = gameState.ended;
   const finished = stages.length > 0 && myGroup.stageIndex >= stages.length;
+  const pickClue = (s) => (lang === 'hi' && s?.clueHi ? s.clueHi : s?.clue);
 
   async function handleSubmit() {
-    const textBeforeSubmit = stage ? stage.clue : null;
+    const textBeforeSubmit = stage ? pickClue(stage) : null;
     const result = await submitScan(qr);
     if (result.ok === null) return; // empty input, no-op like the original
     if (result.ok) {
@@ -41,6 +42,7 @@ export default function Clue() {
         setMsg(null);
       }, 700);
     } else {
+      clueText = pickClue(stage);
       setShake(true);
       setTimeout(() => setShake(false), 400);
       setMsg({ ok: false, text: result.message });
@@ -76,6 +78,10 @@ export default function Clue() {
             : i < myGroup.stageIndex ? 'done' : i === myGroup.stageIndex ? 'now' : '';
           return <div key={i} className={`dot ${cls}`} />;
         })}
+      </div>
+      <div className="btn-row" style={{ marginTop: 8 }}>
+        <button className={`btn btn-sm ${lang === 'en' ? 'btn-lime' : 'btn-ghost'}`} onClick={() => setLang('en')}>EN</button>
+        <button className={`btn btn-sm ${lang === 'hi' ? 'btn-lime' : 'btn-ghost'}`} onClick={() => setLang('hi')}>हिंदी</button>
       </div>
       <div className={`clue-card${shake ? ' shake' : ''}${flash ? ' flash-ok' : ''}`}>
         <div className="clue-text">{clueText}</div>

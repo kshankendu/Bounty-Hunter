@@ -14,6 +14,7 @@ router.get('/', async (_req, res, next) => {
 router.post('/', async (req, res, next) => {
   try {
     const clue = (req.body.clue || '').trim();
+    const clueHi = (req.body.clueHi || '').trim();
     const answer = (req.body.answer || '').trim();
     if (!clue || !answer) {
       return res.json({ ok: false, message: 'Fill in the bonus clue and answer.' });
@@ -21,7 +22,7 @@ router.post('/', async (req, res, next) => {
     const pointsVal = parseInt(req.body.points, 10);
     const points = Number.isNaN(pointsVal) || pointsVal <= 0 ? 500 : pointsVal;
 
-    const bonus = await Bonus.create({ clue, answer, points, active: true });
+    const bonus = await Bonus.create({ clue, clueHi, answer, points, active: true });
     res.json({ ok: true, message: 'Bonus is LIVE ⚡ — squads will be notified.', bonus });
   } catch (err) {
     next(err);

@@ -52,10 +52,10 @@ export function submitBonusScan(id, bonusId, value) {
 export function getAvatarClues() {
   return request('/avatar-clues');
 }
-export function addAvatarStage(avatarName, clue, answer) {
+export function addAvatarStage(avatarName, clue, clueHi, answer) {
   return request(`/avatar-clues/${encodeURIComponent(avatarName)}`, {
     method: 'POST',
-    body: JSON.stringify({ clue, answer })
+    body: JSON.stringify({ clue, clueHi, answer })
   });
 }
 export function deleteAvatarStage(avatarName, index) {
@@ -70,8 +70,8 @@ export function stagesFor(avatarName, avatarClues) {
 export function getBonuses() {
   return request('/bonuses');
 }
-export function pushBonus(clue, answer, points) {
-  return request('/bonuses', { method: 'POST', body: JSON.stringify({ clue, answer, points }) });
+export function pushBonus(clue, clueHi, answer, points) {
+  return request('/bonuses', { method: 'POST', body: JSON.stringify({ clue, clueHi, answer, points }) });
 }
 export function toggleBonus(id) {
   return request(`/bonuses/${id}/toggle`, { method: 'PATCH' });

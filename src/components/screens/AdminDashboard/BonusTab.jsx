@@ -4,19 +4,21 @@ import { useGame } from '../../../context/GameContext.jsx';
 export default function BonusTab() {
   const { bonuses, groups, pushBonus, toggleBonus, deleteBonus } = useGame();
   const [clue, setClue] = useState('');
+  const [clueHi, setClueHi] = useState('');
   const [answer, setAnswer] = useState('');
   const [points, setPoints] = useState('');
   const [status, setStatus] = useState(null);
 
   async function handlePush() {
-    const result = await pushBonus(clue, answer, points);
-    setStatus(result);
-    if (result.ok) {
-      setClue('');
-      setAnswer('');
-      setPoints('');
-    }
+  const result = await pushBonus(clue, clueHi, answer, points);
+  setStatus(result);
+  if (result.ok) {
+    setClue('');
+    setClueHi('');
+    setAnswer('');
+    setPoints('');
   }
+}
 
   const ordered = [...bonuses].reverse();
 
@@ -26,6 +28,10 @@ export default function BonusTab() {
         <div>
           <label>Bonus clue</label>
           <input type="text" placeholder="e.g. Find the red flag and scan it!" value={clue} onChange={(e) => setClue(e.target.value)} />
+        </div>
+        <div>
+          <label>Bonus clue (हिंदी) — optional</label>
+          <input type="text" placeholder="e.g. लाल झंडा ढूंढो और स्कैन करो!" value={clueHi} onChange={(e) => setClueHi(e.target.value)} />
         </div>
         <div>
           <label>Correct QR code / answer</label>
@@ -56,6 +62,7 @@ export default function BonusTab() {
                     <span className="tag">{solvedCount}/{groups.length} solved</span>
                   </div>
                   <div style={{ fontWeight: 700 }}>{b.clue}</div>
+                  <div style={{ fontWeight: 700 }}>{b.clue}{b.clueHi ? ` / ${b.clueHi}` : ''}</div>
                   <div className="mono" style={{ color: 'var(--text-dim)', fontSize: '.8rem', margin: '4px 0 10px' }}>Answer: {b.answer}</div>
                   <div className="btn-row">
                     <button className={`btn ${b.active ? 'btn-ghost' : 'btn-gold'} btn-sm`} onClick={() => toggleBonus(b.id)}>

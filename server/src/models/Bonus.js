@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 const bonusSchema = new mongoose.Schema(
   {
     clue: { type: String, required: true, trim: true },
+    clueHi: { type: String, default: '', trim: true },
     answer: { type: String, required: true, trim: true },
     points: { type: Number, required: true },
     active: { type: Boolean, default: true }

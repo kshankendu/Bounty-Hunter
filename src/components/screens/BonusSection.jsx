@@ -1,11 +1,12 @@
 import React from 'react';
 import { useGame } from '../../context/GameContext.jsx';
 
-function BonusCard({ bonus, solved, onSubmit }) {
+function BonusCard({ bonus, solved, onSubmit, lang }) {
   const [value, setValue] = React.useState('');
   const [msg, setMsg] = React.useState(null);
   const [shake, setShake] = React.useState(false);
   const [flash, setFlash] = React.useState(false);
+  const clueText = lang === 'hi' && bonus.clueHi ? bonus.clueHi : bonus.clue;
 
   if (solved) {
     return (
@@ -50,7 +51,7 @@ function BonusCard({ bonus, solved, onSubmit }) {
 }
 
 export default function BonusSection() {
-  const { myGroup, bonuses, submitBonusScan } = useGame();
+  const { myGroup, bonuses, submitBonusScan, lang } = useGame();
   const activeBonuses = bonuses.filter((b) => b.active);
   if (!myGroup || activeBonuses.length === 0) return null;
   const solved = myGroup.solvedBonuses || [];
@@ -59,7 +60,7 @@ export default function BonusSection() {
     <div id="bonus-section">
       <h2 style={{ marginTop: 18 }}>🎁 Bonus Bounties</h2>
       {activeBonuses.map((b) => (
-        <BonusCard key={b.id} bonus={b} solved={solved.includes(b.id)} onSubmit={submitBonusScan} />
+        <BonusCard key={b.id} bonus={b} solved={solved.includes(b.id)} onSubmit={submitBonusScan} lang={lang} />
       ))}
     </div>
   );
