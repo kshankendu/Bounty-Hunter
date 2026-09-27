@@ -43,7 +43,6 @@ export default function Clue() {
         setMsg(null);
       }, 700);
     } else {
-      clueText = pickClue(stage);
       setShake(true);
       setTimeout(() => setShake(false), 400);
       setMsg({ ok: false, text: result.message });
@@ -63,7 +62,7 @@ export default function Clue() {
       : 'The game master is still preparing your next clue… hang tight! 🕵️';
     showScanCard = false;
   } else {
-    clueText = stage.clue;
+    clueText = pickClue(stage);
   }
 
   return (
