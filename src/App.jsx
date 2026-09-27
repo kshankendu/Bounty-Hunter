@@ -30,7 +30,7 @@ export default function App() {
         <TopBar />
         <ScreenComponent />
         <footer className="note">
-          Made with ❤️ by Shankendu Kunti, Kamlesh Loke & Abhishek Jupaka
+          Made with ❤️ by Shankendu K, Kamlesh L & Abhishek J
         </footer>
       </div>
 
