@@ -13,11 +13,6 @@ function BonusCard({ bonus, solved, onSubmit, lang }) {
     return (
       <div className="card" style={{ opacity: .7 }}>
         <div className="clue-text" style={{ fontSize: '1rem' }}>{bonus.clue}</div>
-        {missingHi && (
-          <div className="msg" style={{ opacity: .7, fontSize: '.72rem', marginTop: 4 }}>
-            (हिंदी अनुवाद अभी जोड़ा नहीं गया — showing English)
-          </div>
-        )}
         <div className="msg ok" style={{ marginTop: 8 }}>✅ Solved — +{bonus.points} pts banked!</div>
       </div>
     );
@@ -40,6 +35,11 @@ function BonusCard({ bonus, solved, onSubmit, lang }) {
   return (
     <div className={`card${shake ? ' shake' : ''}${flash ? ' flash-ok' : ''}`}>
       <div className="clue-text" style={{ fontSize: '1rem' }}>{bonus.clue}</div>
+       {missingHi && (
+          <div className="msg" style={{ opacity: .7, fontSize: '.72rem', marginTop: 4 }}>
+            (हिंदी अनुवाद अभी जोड़ा नहीं गया — showing English)
+          </div>
+        )}
       <div className="score-pill" style={{ marginTop: 8 }}>+{bonus.points} pts</div>
       <div className="stack" style={{ marginTop: 10 }}>
         <input
