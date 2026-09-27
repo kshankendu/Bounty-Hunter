@@ -7,11 +7,17 @@ function BonusCard({ bonus, solved, onSubmit, lang }) {
   const [shake, setShake] = React.useState(false);
   const [flash, setFlash] = React.useState(false);
   const clueText = lang === 'hi' && bonus.clueHi ? bonus.clueHi : bonus.clue;
+  const missingHi = lang === 'hi' && !bonus.clueHi;
 
   if (solved) {
     return (
       <div className="card" style={{ opacity: .7 }}>
         <div className="clue-text" style={{ fontSize: '1rem' }}>{bonus.clue}</div>
+        {missingHi && (
+          <div className="msg" style={{ opacity: .7, fontSize: '.72rem', marginTop: 4 }}>
+            (हिंदी अनुवाद अभी जोड़ा नहीं गया — showing English)
+          </div>
+        )}
         <div className="msg ok" style={{ marginTop: 8 }}>✅ Solved — +{bonus.points} pts banked!</div>
       </div>
     );

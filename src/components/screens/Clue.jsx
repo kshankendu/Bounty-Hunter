@@ -26,6 +26,7 @@ export default function Clue() {
   const ended = gameState.ended;
   const finished = stages.length > 0 && myGroup.stageIndex >= stages.length;
   const pickClue = (s) => (lang === 'hi' && s?.clueHi ? s.clueHi : s?.clue);
+  const missingHi = lang === 'hi' && stage && !stage.clueHi;
 
   async function handleSubmit() {
     const textBeforeSubmit = stage ? pickClue(stage) : null;
@@ -71,6 +72,10 @@ export default function Clue() {
         <img className="av-img-lg" src={AVATAR_IMAGES[myGroup.avatar] || ''} alt="" /> {myGroup.name}
       </h1>
       <div className="score-pill">⭐ {myGroup.score} pts</div>
+      <div className="btn-row" style={{ marginTop: 8 }}>
+        <button className={`btn btn-sm ${lang === 'en' ? 'btn-lime' : 'btn-ghost'}`} onClick={() => setLang('en')}>EN</button>
+        <button className={`btn btn-sm ${lang === 'hi' ? 'btn-lime' : 'btn-ghost'}`} onClick={() => setLang('hi')}>हिंदी</button>
+      </div>
       <div className="dots" style={{ marginTop: 14 }}>
         {stages.map((_, i) => {
           const cls = (myGroup.passed || []).includes(i)
@@ -83,10 +88,11 @@ export default function Clue() {
       <div className={`clue-card${shake ? ' shake' : ''}${flash ? ' flash-ok' : ''}`}>
         <div className="clue-text">{clueText}</div>
       </div>
-      <div className="btn-row" style={{ marginTop: 8 }}>
-        <button className={`btn btn-sm ${lang === 'en' ? 'btn-lime' : 'btn-ghost'}`} onClick={() => setLang('en')}>EN</button>
-        <button className={`btn btn-sm ${lang === 'hi' ? 'btn-lime' : 'btn-ghost'}`} onClick={() => setLang('hi')}>हिंदी</button>
-      </div>
+      {missingHi && (
+        <div className="msg" style={{ opacity: .7, fontSize: '.78rem' }}>
+          (हिंदी अनुवाद अभी जोड़ा नहीं गया — showing English)
+        </div>
+      )}
       {showScanCard && !ended && (
         <div className="card stack">
           <label>Scan result / QR code</label>

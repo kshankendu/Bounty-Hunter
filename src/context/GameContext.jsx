@@ -17,7 +17,13 @@ export function GameProvider({ children }) {
   const [gameState, setGameState] = useState({ ended: false, endedAt: null });
   const [myGroupId, setMyGroupIdState] = useState(() => store.myGroupId());
   const [loaded, setLoaded] = useState(false);
+
+   // ---------- player/admin display language (per-device, persisted) ----------
   const [lang, setLangState] = useState(() => localStorage.getItem('bh_lang') || 'en');
+  const setLang = useCallback((l) => {
+    localStorage.setItem('bh_lang', l);
+    setLangState(l);
+  }, []);
 
   // ---------- navigation ----------
   const [screen, setScreen] = useState(() => (store.myGroupId() ? 'clue' : 'home'));
@@ -46,11 +52,6 @@ export function GameProvider({ children }) {
     setScreen(id);
   }, [refresh]);
   const goHome = useCallback(() => goTo('home'), [goTo]);
-
-  const setLang = useCallback((l) => {
-  localStorage.setItem('bh_lang', l);
-  setLangState(l);
-}, []);
 
   /* ---------- confirm popup (replaces window.confirm) ---------- */
   const requestConfirm = useCallback((message, onYes) => {
