@@ -35,3 +35,5 @@ connectDB()
     console.error('[db] connection failed', err);
     process.exit(1);
   });
+
+  export default app;
