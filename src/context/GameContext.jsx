@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import * as store from '../services/storage.js';
 import { launchConfetti } from '../utils/confetti.js';
 
@@ -20,10 +20,6 @@ export function GameProvider({ children }) {
 
   // ---------- navigation ----------
   const [screen, setScreen] = useState(() => (store.myGroupId() ? 'clue' : 'home'));
-  const screenRef = useRef(screen);
-  useEffect(() => {
-       screenRef.current = screen;
- }, [screen]);
 
   // ---------- modals ----------
   const [confirmModal, setConfirmModal] = useState({ show: false, message: '', onYes: null });
@@ -65,11 +61,7 @@ export function GameProvider({ children }) {
 
   /* ---------- bonus heads-up popup ---------- */
   const checkBonusNotify = useCallback((bonusList) => {
-    if (screenRef.current === 'admin' || screenRef.current === 'admin-login') return;
-    const id = store.myGroupId();
-    if (!id) return;
-    const stillRegistered = groupList.some((g) => g.id === id);
-    if (!stillRegistered) return;
+    if (!store.myGroupId()) return;
     const activeBonuses = bonusList.filter((b) => b.active);
     const seen = store.getSeenBonusIds();
     const unseen = activeBonuses.filter((b) => !seen.includes(b.id));
@@ -89,8 +81,8 @@ export function GameProvider({ children }) {
   const showGameEndPopup = useCallback((id, groupList) => {
     const sorted = [...groupList].sort((a, b) => b.score - a.score);
     const idx = sorted.findIndex((g) => g.id === id);
-    //if (idx === -1) return;
-    if (idx === -1) return false;
+    if (idx === -1) return;
+    //if (idx === -1) return false;
     const g = sorted[idx];
     const rank = idx + 1;
     if (rank === 1) {
@@ -107,16 +99,15 @@ export function GameProvider({ children }) {
     }
   }, []);
   const checkGameEndNotify = useCallback((state, groupList) => {
-    if (screenRef.current === 'admin' || screenRef.current === 'admin-login') return;
     const id = store.myGroupId();
     if (!id) return;
     if (!state.ended) return;
     const seen = store.getSeenGameEnd();
     if (seen === String(state.endedAt)) return;
-    //store.setSeenGameEnd(state.endedAt);
-    //showGameEndPopup(id, groupList);
-    const shown = showGameEndPopup(id, groupList);
-    if (shown) store.setSeenGameEnd(state.endedAt);
+    store.setSeenGameEnd(state.endedAt);
+    showGameEndPopup(id, groupList);
+    //const shown = showGameEndPopup(id, groupList);
+    //if (shown) store.setSeenGameEnd(state.endedAt);
   }, [showGameEndPopup]);
   const dismissGameEnd = useCallback(() => {
     setGameEndModal((m) => ({ ...m, show: false }));
@@ -130,7 +121,7 @@ export function GameProvider({ children }) {
     async function tick() {
       const data = await refresh();
       if (cancelled) return;
-      checkBonusNotify(data.bonuses, data.groups);
+      checkBonusNotify(data.bonuses);
       checkGameEndNotify(data.gameState, data.groups);
     }
 
@@ -221,8 +212,8 @@ export function GameProvider({ children }) {
       setGroups((gs) => [...gs, res.group]);
       store.setMyGroupId(res.group.id);
       setMyGroupIdState(res.group.id);
-      //const freshBonuses = await store.getBonuses();
-      //store.setSeenBonusIds(freshBonuses.filter((b) => b.active).map((b) => b.id));
+      const freshBonuses = await store.getBonuses();
+      store.setSeenBonusIds(freshBonuses.filter((b) => b.active).map((b) => b.id));
     } else if (res.avatarTaken) {
       setGroups(await store.getGroups());
     }
