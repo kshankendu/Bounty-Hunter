@@ -30,7 +30,7 @@ export default function App() {
         <TopBar />
         <ScreenComponent />
         <footer className="note">
-          Live game data is synced through an Express + MongoDB API — every device stays in sync.
+          Made with ❤️ by Shankendu Kunti.
         </footer>
       </div>
 
