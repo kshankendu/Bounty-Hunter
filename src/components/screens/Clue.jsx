@@ -79,12 +79,13 @@ export default function Clue() {
           return <div key={i} className={`dot ${cls}`} />;
         })}
       </div>
+      
+      <div className={`clue-card${shake ? ' shake' : ''}${flash ? ' flash-ok' : ''}`}>
+        <div className="clue-text">{clueText}</div>
+      </div>
       <div className="btn-row" style={{ marginTop: 8 }}>
         <button className={`btn btn-sm ${lang === 'en' ? 'btn-lime' : 'btn-ghost'}`} onClick={() => setLang('en')}>EN</button>
         <button className={`btn btn-sm ${lang === 'hi' ? 'btn-lime' : 'btn-ghost'}`} onClick={() => setLang('hi')}>हिंदी</button>
-      </div>
-      <div className={`clue-card${shake ? ' shake' : ''}${flash ? ' flash-ok' : ''}`}>
-        <div className="clue-text">{clueText}</div>
       </div>
       {showScanCard && !ended && (
         <div className="card stack">
