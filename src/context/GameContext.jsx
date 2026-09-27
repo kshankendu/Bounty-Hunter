@@ -226,6 +226,16 @@ export function GameProvider({ children }) {
     return res;
   }, []);
 
+  // ---- resume (player side, e.g. new device or cleared storage) ----
+  // No real auth here (same trust model as the rest of this demo) — the
+  // squad name confirmation in ResumeSquad.jsx is just a guard against
+  // accidental taps, not a password.
+  const resumeGroup = useCallback((id) => {
+    store.setMyGroupId(id);
+    setMyGroupIdState(id);
+    goTo('clue');
+  }, [goTo]);
+
   // ---- clue / scanning (player side) ----
   const myGroup = groups.find((g) => g.id === myGroupId) || null;
 
@@ -267,7 +277,7 @@ export function GameProvider({ children }) {
     passClue, removeGroup,
     pushBonus, toggleBonus, deleteBonus,
     endGame, reopenGame,
-    registerTeam,
+    registerTeam, resumeGroup,
     submitScan, submitBonusScan,
     refresh
   };

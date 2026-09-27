@@ -36,7 +36,7 @@ router.post('/', async (req, res, next) => {
 
     const nameClash = await Group.findOne({ name: new RegExp(`^${escapeRegex(name)}$`, 'i') });
     if (nameClash) {
-      return res.json({ ok: false, message: 'That name is taken, be more original 😏' });
+      return res.json({ ok: false, message: "That name is already taken. If it's yours from an earlier session, use \u201cResume Your Squad\u201d on the home screen instead of registering again 😏" });
     }
     const avatarClash = await Group.findOne({ avatar });
     if (avatarClash) {

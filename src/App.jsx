@@ -10,12 +10,14 @@ import Leaderboard from './components/screens/Leaderboard.jsx';
 import BonusModal from './components/modals/BonusModal.jsx';
 import ConfirmModal from './components/modals/ConfirmModal.jsx';
 import GameEndModal from './components/modals/GameEndModal.jsx';
+import ResumeSquad from './components/screens/ResumeSquad.jsx';
 
 const SCREENS = {
   home: Home,
   'admin-login': AdminLogin,
   admin: AdminDashboard,
   register: Register,
+  resume: ResumeSquad,
   clue: Clue,
   leaderboard: Leaderboard
 };

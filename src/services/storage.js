@@ -4,9 +4,15 @@
  * Shared game data (groups, avatar clues, bonuses, game state) now lives in
  * MongoDB behind the Express API in /server — every function below talks to
  * it over fetch(). Only per-device bookkeeping (which squad this browser is,
- * which bonuses/game-end popups it has already seen) stays in
- * localStorage/sessionStorage, since that's inherently local to one device
- * and was never meant to sync.
+ * which bonuses/game-end popups it has already seen) stays in localStorage,
+ * since that's inherently local to one device and was never meant to sync.
+ *
+ * This is deliberately localStorage, not sessionStorage: sessionStorage is
+ * cleared the moment the tab/browser actually closes (and mobile browsers
+ * often discard background tabs long before that), which used to log
+ * players out of their own squad mid-hunt with no way back in. localStorage
+ * survives closing the browser and reopening it, so the same phone just
+ * resumes where it left off.
  */
 
 const API_BASE = '/api';
@@ -113,16 +119,16 @@ function writeJSON(key, value) {
 
 /* ---------- "my squad" (this browser/device) ---------- */
 export function myGroupId() {
-  return sessionStorage.getItem(KEYS.myGroup);
+  return localStorage.getItem(KEYS.myGroup);
 }
 export function setMyGroupId(id) {
-  sessionStorage.setItem(KEYS.myGroup, id);
+  localStorage.setItem(KEYS.myGroup, id);
 }
 export function clearMyGroupId() {
-  sessionStorage.removeItem(KEYS.myGroup);
+  localStorage.removeItem(KEYS.myGroup);
 }
 
-/* ---------- notification "seen" bookkeeping (per-device, per-tab) ---------- */
+/* ---------- notification "seen" bookkeeping (per-device) ---------- */
 export function getSeenBonusIds() {
   return readJSON(KEYS.seenBonusIds, []);
 }
@@ -130,8 +136,8 @@ export function setSeenBonusIds(ids) {
   writeJSON(KEYS.seenBonusIds, ids);
 }
 export function getSeenGameEnd() {
-  return sessionStorage.getItem(KEYS.seenGameEnd);
+  return localStorage.getItem(KEYS.seenGameEnd);
 }
 export function setSeenGameEnd(value) {
-  sessionStorage.setItem(KEYS.seenGameEnd, String(value));
+  localStorage.setItem(KEYS.seenGameEnd, String(value));
 }

@@ -11,7 +11,10 @@ export default function Home() {
         {myGroup ? (
           <button className="btn btn-lime" onClick={() => goTo('clue')}>🔍 Continue Hunting</button>
         ) : (
+          <>
           <button className="btn btn-lime" onClick={() => goTo('register')}>🎒 Join the Hunt</button>
+           <button className="btn btn-ghost" onClick={() => goTo('resume')}>🔁 Already Registered? Resume Your Squad</button>
+          </>
         )}
         <button className="btn btn-cyan" onClick={() => goTo('leaderboard')}>🏆 View Leaderboard</button>
         <button className="btn btn-ghost" onClick={() => goTo('admin-login')}>🛠️ Admin Login</button>
