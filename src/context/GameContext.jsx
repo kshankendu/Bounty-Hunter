@@ -89,7 +89,8 @@ export function GameProvider({ children }) {
   const showGameEndPopup = useCallback((id, groupList) => {
     const sorted = [...groupList].sort((a, b) => b.score - a.score);
     const idx = sorted.findIndex((g) => g.id === id);
-    if (idx === -1) return;
+    //if (idx === -1) return;
+    if (idx === -1) return false;
     const g = sorted[idx];
     const rank = idx + 1;
     if (rank === 1) {
@@ -112,8 +113,10 @@ export function GameProvider({ children }) {
     if (!state.ended) return;
     const seen = store.getSeenGameEnd();
     if (seen === String(state.endedAt)) return;
-    store.setSeenGameEnd(state.endedAt);
-    showGameEndPopup(id, groupList);
+    //store.setSeenGameEnd(state.endedAt);
+    //showGameEndPopup(id, groupList);
+    const shown = showGameEndPopup(id, groupList);
+    if (shown) store.setSeenGameEnd(state.endedAt);
   }, [showGameEndPopup]);
   const dismissGameEnd = useCallback(() => {
     setGameEndModal((m) => ({ ...m, show: false }));
@@ -218,8 +221,8 @@ export function GameProvider({ children }) {
       setGroups((gs) => [...gs, res.group]);
       store.setMyGroupId(res.group.id);
       setMyGroupIdState(res.group.id);
-      const freshBonuses = await store.getBonuses();
-      store.setSeenBonusIds(freshBonuses.filter((b) => b.active).map((b) => b.id));
+      //const freshBonuses = await store.getBonuses();
+      //store.setSeenBonusIds(freshBonuses.filter((b) => b.active).map((b) => b.id));
     } else if (res.avatarTaken) {
       setGroups(await store.getGroups());
     }
