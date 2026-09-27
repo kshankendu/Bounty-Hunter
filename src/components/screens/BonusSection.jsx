@@ -2,11 +2,11 @@ import React from 'react';
 import { useGame } from '../../context/GameContext.jsx';
 
 function BonusCard({ bonus, solved, onSubmit, lang }) {
+  const clueText = lang === 'hi' && bonus.clueHi ? bonus.clueHi : bonus.clue;
   const [value, setValue] = React.useState('');
   const [msg, setMsg] = React.useState(null);
   const [shake, setShake] = React.useState(false);
   const [flash, setFlash] = React.useState(false);
-  const clueText = lang === 'hi' && bonus.clueHi ? bonus.clueHi : bonus.clue;
   const missingHi = lang === 'hi' && !bonus.clueHi;
 
   if (solved) {
