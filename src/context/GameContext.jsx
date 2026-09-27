@@ -47,6 +47,11 @@ export function GameProvider({ children }) {
   }, [refresh]);
   const goHome = useCallback(() => goTo('home'), [goTo]);
 
+  const setLang = useCallback((l) => {
+  localStorage.setItem('bh_lang', l);
+  setLangState(l);
+}, []);
+
   /* ---------- confirm popup (replaces window.confirm) ---------- */
   const requestConfirm = useCallback((message, onYes) => {
     setConfirmModal({ show: true, message, onYes });
@@ -221,10 +226,7 @@ export function GameProvider({ children }) {
     return res;
   }, []);
 
-  const setLang = useCallback((l) => {
-  localStorage.setItem('bh_lang', l);
-  setLangState(l);
-}, []);
+
 
   // ---- resume (player side, e.g. new device or cleared storage) ----
   // No real auth here (same trust model as the rest of this demo) — the
