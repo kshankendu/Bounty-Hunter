@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import * as store from '../services/storage.js';
 import { launchConfetti } from '../utils/confetti.js';
 
@@ -20,6 +20,10 @@ export function GameProvider({ children }) {
 
   // ---------- navigation ----------
   const [screen, setScreen] = useState(() => (store.myGroupId() ? 'clue' : 'home'));
+  const screenRef = useRef(screen);
+  useEffect(() => {
+       screenRef.current = screen;
+ }, [screen]);
 
   // ---------- modals ----------
   const [confirmModal, setConfirmModal] = useState({ show: false, message: '', onYes: null });
@@ -61,7 +65,11 @@ export function GameProvider({ children }) {
 
   /* ---------- bonus heads-up popup ---------- */
   const checkBonusNotify = useCallback((bonusList) => {
-    if (!store.myGroupId()) return;
+    if (screenRef.current === 'admin' || screenRef.current === 'admin-login') return;
+    const id = store.myGroupId();
+    if (!id) return;
+    const stillRegistered = groupList.some((g) => g.id === id);
+    if (!stillRegistered) return;
     const activeBonuses = bonusList.filter((b) => b.active);
     const seen = store.getSeenBonusIds();
     const unseen = activeBonuses.filter((b) => !seen.includes(b.id));
@@ -98,6 +106,7 @@ export function GameProvider({ children }) {
     }
   }, []);
   const checkGameEndNotify = useCallback((state, groupList) => {
+    if (screenRef.current === 'admin' || screenRef.current === 'admin-login') return;
     const id = store.myGroupId();
     if (!id) return;
     if (!state.ended) return;
@@ -118,7 +127,7 @@ export function GameProvider({ children }) {
     async function tick() {
       const data = await refresh();
       if (cancelled) return;
-      checkBonusNotify(data.bonuses);
+      checkBonusNotify(data.bonuses, data.groups);
       checkGameEndNotify(data.gameState, data.groups);
     }
 
